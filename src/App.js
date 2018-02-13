@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
+import AddContact from './AddContact';
 import SearchBar from './SearchBar';
 import ContactCard from './ContactCard';
-import './Contacts.css';
+
+import { Navbar, Nav, NavDropdown, MenuItem, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 const contactsAPI = 'https://demo1443058.mockable.io/codeproject_tutorial/api/contacts';
 
-class App extends Component {
 
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,16 +16,14 @@ class App extends Component {
       searchResult: [],
       contactList: []
     }
-
     this.handleSearch = this.handleSearch.bind(this);
     this.returnContactList = this.returnContactList.bind(this);
   }
 
-  handleSearch(searchText) {
-   
+
+  handleSearch(searchText) {   
     this.setState({searchResult: [], searchText: searchText});
     this.state.contactList.map(contact => {
-
       if(searchContact(contact, searchText)) {
          this.setState( prevState => ({
            searchResult: [...prevState.searchResult, contact]
@@ -31,6 +31,7 @@ class App extends Component {
       }
     })
   }
+
 
   componentWillMount() {
     let init = {
@@ -49,35 +50,56 @@ class App extends Component {
           }) 
         )
       )
-    }
+  }
+
 
   returnContactList() {
    return this.state.searchText ? this.state.searchResult :this.state.contactList
   }
+  
+
+
   render() {
-
-
     return (
-    
-      <div className="row">
-        <div className="col-xs-12 col-sm-offset-3 col-sm-6">
-          <span className="title">Contacts</span>
-          
+      <div>
+        <Navbar collapseOnSelect fixedTop>
+        <Navbar.Header>
+        <Navbar.Brand>
+            <a href="#brand">CONTACTS</a>
+        </Navbar.Brand>
+        <Navbar.Toggle />
+        </Navbar.Header>
+        <Navbar.Collapse>
+        <Nav pullRight>
+            <NavDropdown eventKey={1} title="John R" id="basic-nav-dropdown">
+            <MenuItem eventKey={1.1}>Profile</MenuItem>
+            <MenuItem eventKey={1.2}>Account</MenuItem>
+            <MenuItem eventKey={1.3}>Settings</MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey={1.3}>Logout</MenuItem>
+            </NavDropdown>
+        </Nav>
+        </Navbar.Collapse>
+        </Navbar>
+      <br /> <br /> <br />
+      <div className="container">
+        <div className="col-lg-8 col-lg-offset-2"> 
+          <AddContact />
+          <br />       
           <SearchBar onSearch={this.handleSearch} />
-         
-          <ul className="list-group" id="contact-list">
+          <br />
+          <ListGroup className="list-group" id="contact-list">
             { this.returnContactList().map(
                 (contact) => 
-                  <li key={contact.email} className="list-group-item"> 
+                  <ListGroupItem key={contact.email} className="list-group-item"> 
                     <ContactCard contact = {contact}/>
-                  </li>
+                  </ListGroupItem>
               )
             }
-          </ul>
-      
+          </ListGroup>     
         </div>
       </div>
-    
+    </div>
   
      
     );
